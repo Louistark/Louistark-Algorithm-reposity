@@ -1,9 +1,9 @@
 # 二叉树
 
-## 二叉树的最大深度
+### 二叉树的最大深度
 -  [maximum-depth-of-binary-tree](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)
 
-### DFS递归方法
+- DFS递归方法
 ```C++
 /**
  * Definition for a binary tree node.
