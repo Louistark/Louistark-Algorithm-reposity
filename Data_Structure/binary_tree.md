@@ -89,7 +89,9 @@ public:
 本题中，一棵高度平衡二叉树定义为：
 一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1 。
 
-**解题思路：**每个平衡二叉树的左右子树都必须是平衡二叉树
+**解题思路：**
+
+每个平衡二叉树的左右子树都必须是平衡二叉树
 
 - DFS递归
 ```C++
@@ -143,26 +145,35 @@ public:
 ```C++
 class Solution {
 public:
-
+    
+    // 全局最大路径和 初始值为int型的最小值
     int ans = INT_MIN;
 
-    int PathSum(TreeNode* root) {
+    // 通道最大路径值的递归函数
+    int maxPath(TreeNode* root) {
 
+        // 空节点的最大通道路径值为0
         if (root==nullptr) return 0;
 
-        int left_sum = max(0, PathSum(root->left));
-        int right_sum = max(0, PathSum(root->right));
+        // 计算左右通道的最大路径值 若是负数 则写0
+        int left_sum = max(0, maxPath(root->left));
+        int right_sum = max(0, maxPath(root->right));
         
+        // 计算当前节点的最大路径和 并更新全局最大路径和
         int cur_maxpathsum = root->val + left_sum + right_sum;
         ans = max(ans, cur_maxpathsum);
 
+        // 返回当前节点作为通道的最大路径值
         return max((root->val+left_sum), (root->val+right_sum));
     }
-
+    
+    // 全局最大路径和函数
     int maxPathSum(TreeNode* root) {
-
+        
+        // 从根节点计算其下每个节点的最大路径和
         PathSum(root);
 
+        // 返回更新后的全局最大路径和
         return ans;
     }
 };
