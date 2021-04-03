@@ -117,3 +117,53 @@ public:
     }
 };
 ```
+
+### 124.二叉树中最大路径和
+
+- [ ] [binary-tree-maximum-path-sum](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)
+
+路径 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 至多出现一次 。该路径 至少包含一个 节点，且不一定经过根节点。
+
+路径和 是路径中各节点值的总和。
+
+给你一个二叉树的根节点 root ，返回其 最大路径和 。
+
+解题思路：
+
+将每一个节点视为一个通道，其路径值可以有三种情况：根节点、根节点+左通道最大路径值、根节点+右通道最大路径值。
+
+每个节点的最大路径和有四种情况：根节点、根节点+左通道最大路径值、根节点+右通道最大路径值、根节点+左通道最大路径值+右通道最大路径值。
+
+建立一个全局变量“最大路径和”，初始值设为 INT_MIN 
+
+建立一个通道最大路径和的递归函数，计算每个节点的最大路径和，更新全局最大路径和，并返回该节点作为通道的最大路径值。
+
+建立一个全局最大路径和函数，调用通道最大路径和函数计算根节点开始往下所有节点的最大路径和，返回全局最大路径和。
+
+```C++
+class Solution {
+public:
+
+    int ans = INT_MIN;
+
+    int PathSum(TreeNode* root) {
+
+        if (root==nullptr) return 0;
+
+        int left_sum = max(0, PathSum(root->left));
+        int right_sum = max(0, PathSum(root->right));
+        
+        int cur_maxpathsum = root->val + left_sum + right_sum;
+        ans = max(ans, cur_maxpathsum);
+
+        return max((root->val+left_sum), (root->val+right_sum));
+    }
+
+    int maxPathSum(TreeNode* root) {
+
+        PathSum(root);
+
+        return ans;
+    }
+};
+```
