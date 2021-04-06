@@ -13,6 +13,34 @@
  * };
  */
 ```
+## 递归框架
+
+———— 以公共祖先搜索为例
+
+```C++
+// 有返回值的DFS在递归返回过程中解决子问题
+// 无返回值的DFS通过单次遍历在全局变量中记录数据
+bool DFS(TreeNode* root, TreeNode* p, TreeNode* q) {
+
+    // 定义递归退出条件
+    if (root==nullptr) return false;
+
+    // 设置向下递归入口
+    bool left_son = DFS(root->left, p, q);
+    bool right_son = DFS(root->right, p, q);
+    bool self = (root->val==p->val) || (root->val==q->val);
+
+    // 全局问题拦截判断
+    if ( !Ancestor && ((left_son&&right_son) || (left_son&&self) || (self&&right_son)) )
+        Ancestor = root;
+
+    // 解决递归子问题
+    if (left_son || right_son || self)
+        return true;
+    else 
+        return false;
+}
+```
 
 ### 104.二叉树的最大深度
 
@@ -175,6 +203,120 @@ public:
 
         // 返回更新后的全局最大路径和
         return ans;
+    }
+};
+```
+
+### 236.二叉树的最近公共祖先
+
+- [ ] [lowest-common-ancestor-of-a-binary-tree](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/)
+
+给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+
+百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+
+**解题思路：**
+
+最近公共祖先的充分必要条件：
+
+左子树的分支中 或 右子树的分支中 或 该节点本身，三者中有且仅有两者包含p或q。
+
+因此，从二叉树的底部向上查找，寻找满足条件的节点
+
+```C++
+class Solution {
+public:
+    
+    // 声明全局变量公共祖先
+    TreeNode* Ancestor = nullptr;
+
+    // 深度优先搜索，递归，从下往上逐个节点判断
+    // 左子树 右子树 自身 是否包含 p 或 q，满足一条则返回true
+    // 逐个节点判断 是否是最近公共祖先 若是 则最近公共祖先产生
+    bool DFS(TreeNode* root, TreeNode* p, TreeNode* q) {
+
+        if (root==nullptr) return false;
+
+        bool left_son = DFS(root->left, p, q);
+        bool right_son = DFS(root->right, p, q);
+        bool self = (root->val==p->val) || (root->val==q->val);
+
+        if ( !Ancestor && ((left_son&&right_son) || (left_son&&self) || (self&&right_son)) )
+            Ancestor = root;
+
+        if (left_son || right_son || self)
+            return true;
+        else 
+            return false;
+    }
+    
+    // 全局问题输出函数
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    
+        // 从根部调用深度优先搜索，在搜索中解决全局问题
+        DFS(root,p,q);
+
+        // 输出全局问题结果
+        return Ancestor;
+    }
+};
+```
+
+**解题思路：**
+
+进行一次深度优先搜索，用散列表记录所有节点的父节点
+
+从下往上遍历一次 P 节点的所有祖先节点，并记录在 visited 散列表中
+
+依次遍历 Q 节点所有的祖先节点，若发现已记录于 visited 中 则为最近祖先
+
+```C++
+class Solution {
+public:
+
+    // 建立父节点散列表 和 visited散列表
+    unordered_map<int, TreeNode*> father;
+    unordered_map<int, bool> visited;
+
+    // 深度优先搜索递归遍历所有节点，记录其父节点，故无需返回值
+    void DFS(TreeNode* root)
+    {
+        if (root->left != nullptr)
+        {
+            father[root->left->val] = root;
+            DFS(root->left);
+        }
+        if (root->right != nullptr)
+        {
+            father[root->right->val] = root;
+            DFS(root->right);
+        }
+    }
+        
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    
+        // 记录根节点父节点为空，为后续遍历创造退出条件
+        father[root->val] = nullptr;
+        
+        // 调用一遍DFS记录所有节点父节点
+        DFS(root);
+
+        // 遍历 P 的所有祖先节点并记录
+        while (p!=nullptr)
+        {
+            visited[p->val] = true;
+            p = father[p->val];
+        }
+        
+        // 从下往上遍历 Q 的祖先节点，逐个排查
+        while (q!=nullptr)
+        {
+            if (visited[q->val]) return q;
+            q = father[q->val];
+        }
+        
+        // 若无祖先节点 返回空（不存在的情况，但是函数需要返回值）
+        return nullptr;
     }
 };
 ```
