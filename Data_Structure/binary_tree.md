@@ -472,9 +472,7 @@ public:
             
             ans.push_back(cur_level);
         }
-        
         return ans;
-
     }
 };
 ```
