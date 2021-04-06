@@ -319,3 +319,105 @@ public:
     }
 };
 ```
+
+### 102.二叉树的层序遍历
+
+- [ ] [binary-tree-level-order-traversal](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)
+
+**BFS广度优先搜索**
+
+```C++
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+    
+        // 定义输出变量
+        vector<vector<int>> ans;
+        
+        // 检查根节点
+        if (root==nullptr) return ans;
+        
+        // 创建等待队列
+        queue<TreeNode*> Q;
+        Q.push(root);
+
+        // 遍历结束条件：等待队列为空
+        while (!Q.empty())
+        {
+            // 计算当前层的 size
+            int sz = Q.size();
+            
+            // 创建当前层的输出数组
+            vector<int> cur_level;
+            
+            // 若当前层未空，持续输出当前层，并将下一层加入等待队列
+            while (sz>0)
+            {
+                TreeNode* cur = Q.front();
+                Q.pop();
+                if (cur->left!=nullptr) Q.push(cur->left);
+                if (cur->right!=nullptr) Q.push(cur->right);
+                cur_level.push_back(cur->val);
+                
+                // 注意：每次循环，当前层 size 减一
+                sz--;
+            }
+            ans.push_back(cur_level);
+        }
+        return ans;
+    }
+};
+```
+
+### 102.二叉树的层序遍历
+
+- [ ] [binary-tree-level-order-traversal-ii](https://leetcode-cn.com/problems/binary-tree-level-order-traversal-ii/)
+
+**BFS广度优先搜索**
+
+```C++
+class Solution {
+public:
+    vector<vector<int>> levelOrderBottom(TreeNode* root) {
+    
+        // 定义输出变量
+        vector<vector<int>> ans;
+        
+        // 检查根节点
+        if (root==nullptr) return ans;
+        
+        // 创建等待队列
+        queue<TreeNode*> Q;
+        Q.push(root);
+
+        // 遍历结束条件：等待队列为空
+        while (!Q.empty())
+        {
+            // 计算当前层的 size
+            int sz = Q.size();
+            
+            // 创建当前层的输出数组
+            vector<int> cur_level;
+            
+            // 若当前层未空，持续输出当前层，并将下一层加入等待队列
+            while (sz>0)
+            {
+                TreeNode* cur = Q.front();
+                Q.pop();
+                if (cur->left!=nullptr) Q.push(cur->left);
+                if (cur->right!=nullptr) Q.push(cur->right);
+                cur_level.push_back(cur->val);
+                
+                // 注意：每次循环，当前层 size 减一
+                sz--;
+            }
+            ans.push_back(cur_level);
+        }
+        
+        // 从下往上层序遍历，仅需将结果翻转即可
+        reverse(ans.begin(), ans.end());
+        
+        return ans;
+    }
+};
+```
