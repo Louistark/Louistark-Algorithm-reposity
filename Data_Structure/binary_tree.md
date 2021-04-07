@@ -2,6 +2,12 @@
 
 ![binary_tree](https://github.com/Louistark/Louistark-Algorithm-reposity/blob/main/image/%E4%BA%8C%E5%8F%89%E6%A0%91.png)
 
+**前序遍历：F B A D C E G I H**
+
+**中序遍历：A B C D E F G H I**
+
+**后序遍历：A C E D B H I G F**
+
 ```C++
 /**
  * Definition for a binary tree node.
