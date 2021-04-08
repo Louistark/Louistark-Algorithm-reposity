@@ -21,6 +21,74 @@
  * };
  */
 ```
+## 遍历框架
+
+# 递归遍历框架 ———— 前序、中序、后序遍历
+
+```C++
+class Solution {
+public:
+
+    vector<int> ans;
+
+    // 前序递归遍历
+    void DFS_preorder(TreeNode* root)
+    {
+        if (root==nullptr) return;
+
+        ans.push_back(root->val);
+        if (root->left!=nullptr) DFS(root->left);
+        if (root->right!=nullptr) DFS(root->right);
+    }
+
+    // 中序递归遍历
+    void DFS_inorder(TreeNode* root)
+    {
+        if (root==nullptr) return;
+
+        if (root->left!=nullptr) DFS(root->left);
+        ans.push_back(root->val);
+        if (root->right!=nullptr) DFS(root->right);
+    }
+
+    // 后序递归遍历
+    void DFS_postorder(TreeNode* root)
+    {
+        if (root==nullptr) return;
+
+        if (root->left!=nullptr) DFS(root->left);
+        if (root->right!=nullptr) DFS(root->right);
+        ans.push_back(root->val);
+    }
+
+    vector<int> preorderTraversal(TreeNode* root) {
+        ans.clear();
+        DFS_preorder(root);
+        return ans;
+    }
+};
+
+    vector<int> inorderTraversal(TreeNode* root) {
+        ans.clear();
+        DFS_inorder(root);
+        return ans;
+    }
+};
+
+    vector<int> postorderTraversal(TreeNode* root) {
+        ans.clear();
+        DFS_postorder(root);
+        return ans;
+    }
+};
+
+```
+
+# 迭代遍历框架 ———— 前序、中序、后序遍历
+
+# Morris遍历框架 ———— 前序、中序、后序遍历
+
+
 ## 递归框架
 ———— 以公共祖先搜索为例
 
