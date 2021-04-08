@@ -107,27 +107,28 @@ public:
         stack<TreeNode*> stk;
         
         // 建立当前节点容器模拟递归时的当前节点
-        TreeNode* node = root;
+        TreeNode* cur = root;
         
         // 当递归栈不为空或当前节点不为空时进行模拟递归调用
         // 若递归栈为空，表明递归回到了原点，根节点被取出
         // 若当前节点为空，表明递归到了底部，需要往上返回，只要栈不为空，就能有新节点
-        while (!stk.empty() || node != nullptr) {
+        while (!stk.empty() || cur != nullptr) {
         
             // 当前节点不为空时
             // 先将当前节点写入遍历输出容器（先写根节点）
             // 再将当前节点压入递归栈，将当前节点替换为当前节点的左子树（再递归左子树）
+            // 注：每次触底返回时，cur中装的都是空值，故不会再一次压栈
             // ans.emplace(root->val);
             // if (root->left!=nullptr) DFS(root->left);
-            while (node != nullptr) {
-                ans.emplace_back(node->val);
-                stk.emplace(node);
-                node = node->left;
+            while (cur != nullptr) {
+                ans.emplace_back(cur->val);
+                stk.emplace(cur);
+                cur = cur->left;
             }
             
             // 当前节点为空时，返回上一层
             // 当前节点置换为栈顶弹出节点的右节点
-            node = stk.top()->right;
+            cur = stk.top()->right;
             stk.pop();
         }
         return ans;
