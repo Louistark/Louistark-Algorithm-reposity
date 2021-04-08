@@ -225,6 +225,45 @@ public:
 
 ### Morris遍历框架 ———— 前序、中序、后序遍历
 
+Morris前序遍历详解
+
+```C++
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode *root) {
+    
+        vector<int> res;
+        if (root == nullptr) return res;
+
+        // 指针p1为根节点，
+        TreeNode *p1 = root, *p2 = nullptr;
+
+        // 若根节点不为空，进入循环
+        while (p1 != nullptr) {
+        
+            // p2 指向 p1 的前驱节点（左子树）
+            p2 = p1->left;
+            if (p2 != nullptr) {
+                while (p2->right != nullptr && p2->right != p1) {
+                    p2 = p2->right;
+                }
+                if (p2->right == nullptr) {
+                    res.emplace_back(p1->val);
+                    p2->right = p1;
+                    p1 = p1->left;
+                    continue;
+                } else {
+                    p2->right = nullptr;
+                }
+            } else {
+                res.emplace_back(p1->val);
+            }
+            p1 = p1->right;
+        }
+        return res;
+    }
+};
+```
 
 ## 递归框架
 ———— 以公共祖先搜索为例
