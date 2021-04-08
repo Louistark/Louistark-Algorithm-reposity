@@ -90,6 +90,8 @@ public:
 
 **[注] 第一次进入下一层递归，且返回还要用到当前节点时，将当前节点压入栈。若递归返回后，不需要当前节点，则当前节点不应该在栈中。**
 
+前序遍历的迭代方法详解
+
 ```C++
 class Solution {
 public:
@@ -128,13 +130,99 @@ public:
             
             // 当前节点为空时，返回上一层
             // 当前节点置换为栈顶弹出节点的右节点
-            cur = stk.top()->right;
+            cur = stk.top();
             stk.pop();
+            cur = cur->right;
         }
         return ans;
     }
 };
 ```
+
+中序遍历的迭代方法和前序遍历的区别在于
+
+前序遍历在查找左子树之**前**把根节点压入输出容器
+
+中序遍历在查找完左子树之**后**把根节点压入输出容器
+
+```C++
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        if (root==nullptr) return ans;
+
+        stack<TreeNode*> stk;
+        TreeNode* cur = root;
+
+        while (!stk.empty() || cur!=nullptr)
+        {
+            while (cur!=nullptr)
+            {
+                stk.emplace(cur);
+                cur = cur->left;
+            }
+            cur = stk.top();
+            stk.pop();
+            
+            // 中序遍历在查找完左子树后将根节点放入输出容器
+            ans.emplace_back(cur->val);
+            
+            cur = cur->right;
+        }
+        return ans;
+    }
+};
+```
+
+后序遍历与前两者的区别在于
+
+后序遍历每次查找完左子树后将栈顶非空节点取出查找一下右子树
+
+确认右子树为空或刚被访问 才会将根节点压入输出容器
+
+```C++
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        if (root==nullptr) return ans;
+
+        stack<TreeNode*> stk;
+        TreeNode* cur = root;
+        TreeNode* pre = nullptr;
+
+        while (!stk.empty() || cur!=nullptr)
+        {
+            // 查找左子树至底部
+            while (cur!=nullptr)
+            {
+                stk.emplace(cur);
+                cur = cur->left;
+            }
+            
+            // 取出栈顶非空节点
+            cur = stk.top();
+            stk.pop();
+            
+            // 若右子树非空且未被访问 则压入一个右子树（然后继续查找其左子树至底部）
+            if (cur->right!=nullptr && cur->right!=pre)
+            {
+                stk.emplace(cur);
+                cur = cur->right;
+            }
+            else // 直到出现无左子树且无右子树或右子树刚被访问时，才将根节点压入输出容器
+            {
+                ans.emplace_back(cur->val);
+                pre = cur;
+                cur = nullptr;
+            }
+        }
+        return ans;
+    }
+};
+```
+
 ### Morris遍历框架 ———— 前序、中序、后序遍历
 
 
