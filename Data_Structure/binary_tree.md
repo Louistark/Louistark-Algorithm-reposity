@@ -243,21 +243,37 @@ public:
         
             // p2 指向 p1 的前驱节点（左子树）
             p2 = p1->left;
-            if (p2 != nullptr) {
-                while (p2->right != nullptr && p2->right != p1) {
+            if (p2 != nullptr) 
+            {
+                // 一直找到 p2 节点的最右子节点（若无右节点则不进行这一步）
+                while (p2->right != nullptr && p2->right != p1) 
+                {
                     p2 = p2->right;
                 }
-                if (p2->right == nullptr) {
+                if (p2->right == nullptr) 
+                {
+                    // 将根节点的值放入输出容器
                     res.emplace_back(p1->val);
+
+                    // 将根节点前驱节点的最右子节点的右子树指向根节点（建立线索）
                     p2->right = p1;
+
+                    // 下一个根节点设置为根节点的左子树，重新开始大循环
                     p1 = p1->left;
                     continue;
-                } else {
+                } 
+                else // 当根节点的前驱节点的右子树指向根节点时进入此处
+                {
+                    // 防止程序在此处陷入死循环，剪断线索
                     p2->right = nullptr;
                 }
-            } else {
+            }
+            else // 当根节点无前驱节点时将根节点压入输出容器
+            {
                 res.emplace_back(p1->val);
             }
+
+            // 当根节点前驱节点右子树指向根节点或根节点无前驱节点时，进入右子树
             p1 = p1->right;
         }
         return res;
