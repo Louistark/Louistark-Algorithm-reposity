@@ -86,6 +86,31 @@ public:
 
 ### 迭代遍历框架 ———— 前序、中序、后序遍历
 
+```C++
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if (root == nullptr) {
+            return res;
+        }
+
+        stack<TreeNode*> stk;
+        TreeNode* node = root;
+        while (!stk.empty() || node != nullptr) {
+            while (node != nullptr) {
+                res.emplace_back(node->val);
+                stk.emplace(node);
+                node = node->left;
+            }
+            node = stk.top();
+            stk.pop();
+            node = node->right;
+        }
+        return res;
+    }
+};
+```
 ### Morris遍历框架 ———— 前序、中序、后序遍历
 
 
