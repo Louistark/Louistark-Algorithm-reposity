@@ -88,6 +88,9 @@ public:
 
 迭代方法思路与递归相同，只是将递归时的隐式栈显示地维护出来。
 
+**[注] 第一次进入下一层递归，且返回还要用到当前节点时，将当前节点压入栈。
+       若递归返回后，不需要当前节点，则当前节点不应该在栈中。
+
 ```C++
 class Solution {
 public:
@@ -125,9 +128,8 @@ public:
             
             // 当前节点为空时，返回上一层
             // 当前节点置换为栈顶弹出节点的右节点
-            node = stk.top();
+            node = stk.top()->right;
             stk.pop();
-            node = node->right;
         }
         return ans;
     }
