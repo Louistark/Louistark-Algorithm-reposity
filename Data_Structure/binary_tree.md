@@ -97,6 +97,7 @@ public:
 - 只要 栈不为空 或 当前节点不为空 就循环迭代 （若栈底根节点被取出且其右节点为空，则遍历结束）
 - 考虑当前节点是否为空，不为空则向下递归，为空则取出根节点的右节点
 - 若当前节点不为空，则判断是否可以向左递归，否则就向右递归
+- 递归返回的时候把向下的路置空，防止多跑
 
 ```C++
 class Solution {
@@ -147,7 +148,7 @@ public:
         return ans;
     }
 };
-```
+``` 
 
 中序遍历的迭代方法和前序遍历的区别在于
 
@@ -167,18 +168,25 @@ public:
 
         while (!stk.empty() || cur!=nullptr)
         {
-            while (cur!=nullptr)
+            if (cur!=nullptr)
             {
-                stk.emplace(cur);
-                cur = cur->left;
+                if (cur->left!=nullptr)
+                {
+                    stk.emplace(cur);
+                    cur = cur->left;
+                }
+                else
+                {
+                    ans.emplace_back(cur->val);
+                    cur = cur->right;
+                }
             }
-            cur = stk.top();
-            stk.pop();
-            
-            // 中序遍历在查找完左子树后将根节点放入输出容器
-            ans.emplace_back(cur->val);
-            
-            cur = cur->right;
+            else
+            {
+                cur = stk.top();
+                cur->left = nullptr;
+                stk.pop();
+            }
         }
         return ans;
     }
@@ -200,37 +208,33 @@ public:
 
         stack<TreeNode*> stk;
         TreeNode* cur = root;
-        TreeNode* pre = nullptr;
 
         while (!stk.empty() || cur!=nullptr)
         {
-            // 查找左子树至底部
-            while (cur!=nullptr)
+            if (cur!=nullptr)
             {
-                stk.emplace(cur);
-                cur = cur->left;
+                if (cur->left!=nullptr)
+                {
+                    stk.emplace(cur);
+                    cur = cur->left;
+                }
+                else
+                {
+                    stk.emplace(cur);
+                    cur = cur->right;
+                }
             }
-            
-            // 取出栈顶非空节点
-            cur = stk.top();
-            stk.pop();
-            
-            // 若右子树非空且未被访问 则压入一个右子树（然后继续查找其左子树至底部）
-            if (cur->right!=nullptr && cur->right!=pre)
-            {
-                stk.emplace(cur);
-                cur = cur->right;
-            }
-            else // 直到出现无左子树且无右子树或右子树刚被访问时，才将根节点压入输出容器
-            {
+            else{
+                cur = stk.top();
+                stk.pop();
                 ans.emplace_back(cur->val);
-                pre = cur;
                 cur = nullptr;
             }
         }
         return ans;
     }
 };
+
 ```
 
 ### Morris遍历框架 ———— 前序、中序、后序遍历
