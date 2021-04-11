@@ -90,7 +90,13 @@ public:
 
 **[注] 第一次进入下一层递归，且返回还要用到当前节点时，将当前节点压入栈。若递归返回后，不需要当前节点，则当前节点不应该在栈中。**
 
+**[注] 手撕迭代遍历时，可以把递归遍历框架先写出作为参考。**
+
 前序遍历的迭代方法详解
+
+- 只要 栈不为空 或 当前节点不为空 就循环迭代 （若栈底根节点被取出且其右节点为空，则遍历结束）
+- 考虑当前节点是否为空，不为空则向下递归，为空则取出根节点的右节点
+- 若当前节点不为空，则判断是否可以向左递归，否则就向右递归
 
 ```C++
 class Solution {
@@ -112,27 +118,31 @@ public:
         TreeNode* cur = root;
         
         // 当递归栈不为空或当前节点不为空时进行模拟递归调用
-        // 若递归栈为空，表明递归回到了原点，根节点被取出
-        // 若当前节点为空，表明递归到了底部，需要往上返回，只要栈不为空，就能有新节点
-        while (!stk.empty() || cur != nullptr) {
-        
-            // 当前节点不为空时
-            // 先将当前节点写入遍历输出容器（先写根节点）
-            // 再将当前节点压入递归栈，将当前节点替换为当前节点的左子树（再递归左子树）
-            // 注：每次触底返回时，cur中装的都是空值，故不会再一次压栈
-            // ans.emplace(root->val);
-            // if (root->left!=nullptr) DFS(root->left);
-            while (cur != nullptr) {
+        // 若递归栈为空，表明根节点被取出，cur=root->right
+        // 若当前节点为空，cur=stk.top()->right
+        while (!stk.empty() || cur!=nullptr)
+        {
+            if (cur!=nullptr) // 先考虑当前节点不为空
+            {
+                // 前序遍历，根节点先输出
                 ans.emplace_back(cur->val);
-                stk.emplace(cur);
-                cur = cur->left;
+                
+                // 再判断是否可以向左递归
+                if (cur->left!=nullptr)
+                {
+                    stk.emplace(cur);
+                    cur = cur->left;
+                }
+                else // 不能向左递归，则向右递归
+                {
+                    cur = cur->right;
+                }
+            } 
+            else // 当前节点为空
+            {
+                cur = stk.top()->right;
+                stk.pop();
             }
-            
-            // 当前节点为空时，返回上一层
-            // 当前节点置换为栈顶弹出节点的右节点
-            cur = stk.top();
-            stk.pop();
-            cur = cur->right;
         }
         return ans;
     }
