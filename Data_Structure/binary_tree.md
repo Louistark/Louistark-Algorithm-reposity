@@ -184,8 +184,9 @@ public:
             else
             {
                 cur = stk.top();
-                cur->left = nullptr;
                 stk.pop();
+                ans.emplace_back(cur->val);
+                cur = cur->right;
             }
         }
         return ans;
@@ -224,11 +225,20 @@ public:
                     cur = cur->right;
                 }
             }
-            else{
+            else
+            {
                 cur = stk.top();
-                stk.pop();
-                ans.emplace_back(cur->val);
-                cur = nullptr;
+                if ( cur->right!=nullptr && cur->right!=prev )
+                {
+                    cur = cur->right;
+                }
+                else
+                {
+                    ans.emplace_back(cur->val);
+                    stk.pop();
+                    prev = cur;
+                    cur = nullptr;
+                }
             }
         }
         return ans;
