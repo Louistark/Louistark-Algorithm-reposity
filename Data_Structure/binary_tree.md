@@ -780,3 +780,90 @@ public:
     }
 };
 ```
+
+### 912.排序数组
+
+- [ ] [sort-an-array](https://leetcode-cn.com/problems/sort-an-array/)
+
+**归并排序**
+
+```C++
+class Solution {
+public:
+    vector<int> tmp;
+    void mergsort(vector<int>& nums, int l, int r)
+    {
+        if ( l>=r ) return;
+        int mid = (l+r)>>1;
+        mergsort(nums, l, mid);
+        mergsort(nums, mid+1, r);
+
+        int i = l, j = mid+1, cnt = l;
+        while ( i<=mid && j<=r )
+        {
+            if ( nums[i]<=nums[j] )
+            {
+                tmp[cnt++] = nums[i++];
+            }
+            if ( nums[i]>nums[j] )
+            {
+                tmp[cnt++] = nums[j++];
+            }
+        }
+        while ( i<=mid )
+        {
+            tmp[cnt++] = nums[i++];
+        }
+        while ( j<=r )
+        {
+            tmp[cnt++] = nums[j++];
+        }
+        for ( int n=l; n<=r; n++ )
+        {
+            nums[n] = tmp[n];
+        }
+    }
+    vector<int> sortArray(vector<int>& nums) {
+        tmp.resize(nums.size());
+        mergsort(nums, 0, nums.size()-1);
+        return nums;
+    }
+};
+```
+
+**快速排序**
+
+```C++
+class Solution {
+public:
+    void quicksort(vector<int>& nums, int l, int r)
+    {
+        if ( l>=r ) return;
+        int pos = rand()%(r-l+1) + l;
+        swap(nums[pos], nums[r]);
+
+        int i = l, j = r;
+        while ( i<j )
+        {
+            while ( i<r && nums[i]<=nums[r] )
+            {
+                i++;
+            }
+            while ( i<j && nums[j]>=nums[r] )
+            {
+                j--;
+            }
+            if ( i<j ) swap(nums[i], nums[j]);
+        }
+        swap(nums[i], nums[r]);
+
+        quicksort(nums, l, i-1);
+        quicksort(nums, i+1, r);
+    }
+    vector<int> sortArray(vector<int>& nums) {
+        srand((unsigned int)time(NULL));
+        quicksort(nums, 0, nums.size()-1);
+        return nums;
+    }
+};
+```
